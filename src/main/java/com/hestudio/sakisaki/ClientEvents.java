@@ -18,6 +18,7 @@ public final class ClientEvents {
     );
 
     private static final CrawlSoundController SOUND_CONTROLLER = new CrawlSoundController();
+    private static boolean lastPoseCrawl;
 
     private ClientEvents() {
     }
@@ -42,6 +43,7 @@ public final class ClientEvents {
         if (player == null) {
             ClientCrawlState.setCrawling(false);
             SOUND_CONTROLLER.reset();
+            lastPoseCrawl = false;
             return;
         }
 
@@ -51,6 +53,24 @@ public final class ClientEvents {
             SakiSakiNetwork.sendToServer(new CrawlToggleMessage(newState));
         }
 
+        applyClientPose(player);
         SOUND_CONTROLLER.tick(player);
+    }
+
+    private static void applyClientPose(LocalPlayer player) {
+        boolean crawling = ClientCrawlState.isCrawling();
+        if (crawling != lastPoseCrawl) {
+            if (crawling) {
+                player.setSwimming(true);
+                player.setForcedPose(net.minecraft.world.entity.Pose.SWIMMING);
+            } else {
+                player.setForcedPose(null);
+                if (!player.isInWater()) {
+                    player.setSwimming(false);
+                }
+            }
+            player.refreshDimensions();
+            lastPoseCrawl = crawling;
+        }
     }
 }

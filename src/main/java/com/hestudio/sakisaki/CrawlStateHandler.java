@@ -50,12 +50,12 @@ public class CrawlStateHandler {
     }
 
     private static void applyCrawl(Player player) {
-        if (!player.isInWater() && player.onGround()) {
-            if (player.getPose() != Pose.SWIMMING) {
-                player.setPose(Pose.SWIMMING);
-                player.refreshDimensions();
-            }
+        if (player.getPose() != Pose.SWIMMING) {
+            player.setPose(Pose.SWIMMING);
+            player.refreshDimensions();
         }
+        player.setSwimming(true);
+        player.setForcedPose(Pose.SWIMMING);
 
         AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
         if (speed != null && speed.getModifier(CRAWL_SPEED_UUID) == null) {
@@ -69,6 +69,10 @@ public class CrawlStateHandler {
             speed.removeModifier(CRAWL_SPEED_UUID);
         }
 
+        player.setForcedPose(null);
+        if (!player.isInWater()) {
+            player.setSwimming(false);
+        }
         if (player.getPose() == Pose.SWIMMING && player.onGround() && !player.isInWater() && !player.isFallFlying()) {
             player.setPose(Pose.STANDING);
             player.refreshDimensions();

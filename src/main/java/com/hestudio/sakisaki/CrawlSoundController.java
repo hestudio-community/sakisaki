@@ -14,11 +14,10 @@ public final class CrawlSoundController {
             currentSound = null;
         }
 
-        if (!ClientCrawlState.isCrawling()) {
-            return;
-        }
-
-        if (!isMoving(player)) {
+        boolean crawling = ClientCrawlState.isCrawling();
+        boolean moving = isMoving(player);
+        if (!crawling || !moving) {
+            stopCurrent();
             return;
         }
 
@@ -36,7 +35,7 @@ public final class CrawlSoundController {
     }
 
     public void reset() {
-        currentSound = null;
+        stopCurrent();
     }
 
     private boolean isMoving(LocalPlayer player) {
@@ -46,5 +45,12 @@ public final class CrawlSoundController {
         float forward = player.input.forwardImpulse;
         float left = player.input.leftImpulse;
         return Math.abs(forward) > 0.01f || Math.abs(left) > 0.01f;
+    }
+
+    private void stopCurrent() {
+        if (currentSound != null) {
+            Minecraft.getInstance().getSoundManager().stop(currentSound);
+            currentSound = null;
+        }
     }
 }
