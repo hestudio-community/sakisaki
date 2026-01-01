@@ -7,6 +7,8 @@ modId = "sakisaki"
 version = "${version}"
 displayName = "saki酱~"
 description = "Adds a toggleable crawl mode with sound."
+authors = "heStudio Community"
+displayURL = "https://github.com/hestudio-community/sakisaki"
 
 [[dependencies.sakisaki]]
 modId = "forge"
