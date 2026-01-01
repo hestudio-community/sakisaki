@@ -5,7 +5,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.EntityBoundSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 
 public final class CrawlSoundController {
     private SoundInstance currentSound;
@@ -29,8 +28,8 @@ public final class CrawlSoundController {
                     SoundSource.PLAYERS,
                     1.0f,
                     1.0f,
-                    RandomSource.create(),
-                    player
+                    player,
+                    player.getId()
             );
             Minecraft.getInstance().getSoundManager().play(currentSound);
         }
