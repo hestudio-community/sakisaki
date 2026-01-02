@@ -6,11 +6,14 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CrawlStateHandler {
     private static final String NBT_CRAWL = "sakisaki_crawling";
+    private static final String NBT_CRAWL_SOUND = "sakisaki_crawl_sound";
+    private static final String NBT_CRAWL_SOUND_TICK = "sakisaki_crawl_sound_tick";
     private static final UUID CRAWL_SPEED_UUID = UUID.fromString("2b555b50-8d39-4b15-9aa5-6b2b4602a8b0");
     private static final AttributeModifier CRAWL_SPEED_MODIFIER = new AttributeModifier(
             CRAWL_SPEED_UUID,
@@ -36,6 +39,25 @@ public class CrawlStateHandler {
         } else {
             clearCrawl(player);
         }
+
+        updateCrawlSound(player, crawling);
+    }
+
+    @SubscribeEvent
+    public void onStartTracking(PlayerEvent.StartTracking event) {
+        if (!(event.getTarget() instanceof Player targetPlayer)) {
+            return;
+        }
+        if (!(event.getEntity() instanceof net.minecraft.server.level.ServerPlayer trackingPlayer)) {
+            return;
+        }
+
+        boolean soundActive = targetPlayer.getPersistentData().getBoolean(NBT_CRAWL_SOUND);
+        if (!soundActive) {
+            return;
+        }
+
+        SakiSakiNetwork.sendCrawlSoundStateToPlayer(trackingPlayer, targetPlayer.getId(), true);
     }
 
     public static boolean isCrawling(Player player) {
@@ -78,4 +100,21 @@ public class CrawlStateHandler {
             player.refreshDimensions();
         }
     }
+
+    private static void updateCrawlSound(Player player, boolean crawling) {
+        if (!(player instanceof net.minecraft.server.level.ServerPlayer serverPlayer)) {
+            return;
+        }
+
+        boolean shouldPlay = crawling;
+        boolean wasPlaying = player.getPersistentData().getBoolean(NBT_CRAWL_SOUND);
+
+        if (shouldPlay == wasPlaying) {
+            return;
+        }
+
+        player.getPersistentData().putBoolean(NBT_CRAWL_SOUND, shouldPlay);
+        SakiSakiNetwork.sendCrawlSoundState(serverPlayer, shouldPlay);
+    }
+
 }

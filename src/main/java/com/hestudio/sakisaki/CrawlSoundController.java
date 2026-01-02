@@ -51,7 +51,7 @@ public final class CrawlSoundController {
     }
 
     private static LoopingEntitySoundInstance createLoopSound(LocalPlayer player) {
-        SoundEvent soundEvent = ModSounds.CRAWL_LOOP.get();
+        SoundEvent soundEvent = net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG;
         return new LoopingEntitySoundInstance(
                 soundEvent,
                 SoundSource.PLAYERS,

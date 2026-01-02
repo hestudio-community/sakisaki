@@ -1,5 +1,6 @@
 {
   "crawl_loop": {
+    "attenuation_distance": 32,
     "sounds": [
       "sakisaki:crawl_loop"
     ]

@@ -55,6 +55,7 @@ public final class ClientEvents {
 
         applyClientPose(player);
         SOUND_CONTROLLER.tick(player);
+        RemoteCrawlSoundController.tick();
     }
 
     private static void applyClientPose(LocalPlayer player) {
