@@ -1,4 +1,6 @@
 {
   "key.sakisaki.crawl": "切换趴倒",
-  "key.categories.sakisaki": "SakiSaki"
+  "key.categories.sakisaki": "SakiSaki",
+  "sakisaki.options.crawlVolume": "saki酱~",
+  "sakisaki.options.crawlVolume.value": "saki酱~: %s%%"
 }

@@ -14,6 +14,9 @@ public class SakiSakiMod {
     public SakiSakiMod() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModSounds.register(modBus);
+        
+        net.minecraftforge.fml.ModLoadingContext.get().registerConfig(net.minecraftforge.fml.config.ModConfig.Type.CLIENT, ClientConfig.CLIENT_SPEC);
+
         SakiSakiNetwork.register();
 
         MinecraftForge.EVENT_BUS.register(new CrawlStateHandler());

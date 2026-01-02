@@ -27,10 +27,35 @@ public final class ClientEvents {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(ClientEvents::onRegisterKeys);
         MinecraftForge.EVENT_BUS.addListener(ClientEvents::onClientTick);
+        MinecraftForge.EVENT_BUS.addListener(ClientEvents::onInitScreen);
     }
 
     private static void onRegisterKeys(RegisterKeyMappingsEvent event) {
         event.register(CRAWL_KEY);
+    }
+
+    private static void onInitScreen(net.minecraftforge.client.event.ScreenEvent.Init.Post event) {
+        if (event.getScreen() instanceof net.minecraft.client.gui.screens.SoundOptionsScreen) {
+            net.minecraft.client.gui.components.OptionsList list = null;
+            for (net.minecraft.client.gui.components.events.GuiEventListener listener : event.getListenersList()) {
+                if (listener instanceof net.minecraft.client.gui.components.OptionsList optionsList) {
+                    list = optionsList;
+                    break;
+                }
+            }
+
+            if (list != null) {
+                net.minecraft.client.OptionInstance<Double> volumeOption = new net.minecraft.client.OptionInstance<>(
+                        "sakisaki.options.crawlVolume",
+                        net.minecraft.client.OptionInstance.noTooltip(),
+                        (component, value) -> net.minecraft.network.chat.Component.translatable("sakisaki.options.crawlVolume.value", (int) (value * 100)),
+                        net.minecraft.client.OptionInstance.UnitDouble.INSTANCE,
+                        ClientConfig.CLIENT.crawlVolume.get(),
+                        value -> ClientConfig.CLIENT.crawlVolume.set(value)
+                );
+                list.addSmall(volumeOption, null);
+            }
+        }
     }
 
     public static void onClientTick(TickEvent.ClientTickEvent event) {

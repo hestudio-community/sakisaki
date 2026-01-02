@@ -25,8 +25,10 @@ public final class CrawlSoundController {
 
         if (currentSound == null) {
             currentSound = createLoopSound(player);
-            currentSound.setVolume(BASE_VOLUME);
             Minecraft.getInstance().getSoundManager().play(currentSound);
+        } else {
+            float volume = ClientConfig.CLIENT.crawlVolume.get().floatValue();
+            currentSound.setVolume(volume * BASE_VOLUME);
         }
     }
 
@@ -51,11 +53,12 @@ public final class CrawlSoundController {
     }
 
     private static LoopingEntitySoundInstance createLoopSound(LocalPlayer player) {
-        SoundEvent soundEvent = net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_STRONG;
+        SoundEvent soundEvent = ModSounds.CRAWL_LOOP.get();
+        float volume = ClientConfig.CLIENT.crawlVolume.get().floatValue();
         return new LoopingEntitySoundInstance(
                 soundEvent,
                 SoundSource.PLAYERS,
-                BASE_VOLUME,
+                volume * BASE_VOLUME,
                 1.0f,
                 player,
                 player.getId()
